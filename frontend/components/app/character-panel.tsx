@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { UserIcon, HeartIcon, SwordIcon, BackpackIcon, X } from "@phosphor-icons/react";
+import { UserIcon, HeartIcon, SwordIcon, BackpackIcon, XIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 interface AttributeMap {
@@ -157,7 +157,7 @@ export function CharacterPanel({ player }: CharacterPanelProps) {
               <h4 className="text-sm font-semibold text-foreground">Attributes</h4>
             </div>
             <div className="grid grid-cols-3 gap-2">
-              {Object.entries(p.attributes || {}).map(([key, value]) => (
+              {Object.entries(p.attributes || {}).sort().map(([key, value]) => (
                 <motion.div
                   key={key}
                   whileHover={{ scale: 1.05 }}
@@ -232,7 +232,7 @@ export function CharacterPanel({ player }: CharacterPanelProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-9999 p-4 pointer-events-auto"
             onClick={() => setSelectedItem(null)}
           >
             <motion.div
@@ -240,12 +240,12 @@ export function CharacterPanel({ player }: CharacterPanelProps) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-card border-2 border-border/50 rounded-lg p-6 max-w-md w-full parchment shadow-2xl"
+              className="bg-card border-2 border-border/50 rounded-lg p-6 max-w-md w-full parchment shadow-2xl pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h4 className="text-xl font-bold text-foreground font-serif magic-glow">
+                  <h4 className="text-xl font-bold text-foreground font-serif magic-glow-text">
                     {selectedItem.name}
                   </h4>
                   {selectedItem.type && (
@@ -256,9 +256,9 @@ export function CharacterPanel({ player }: CharacterPanelProps) {
                 </div>
                 <button
                   onClick={() => setSelectedItem(null)}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer pointer-events-auto shrink-0"
                 >
-                  <X size={24} />
+                  <XIcon size={24} />
                 </button>
               </div>
 
