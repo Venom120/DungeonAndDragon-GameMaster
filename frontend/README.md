@@ -1,16 +1,15 @@
-# Agent Starter for React
+# D&D Game Master - Frontend
 
-> 🎙️ **This is part of the AI Voice Agents Challenge by murf.ai**
+> 🎮 **Voice-Controlled Fantasy Adventure Interface**
 >
-> This frontend is designed to work with the Murf Falcon-powered backend for ultra-fast voice interactions.
-> See the [main README](../README.md) for complete setup instructions and challenge details.
+> This is the frontend application for the D&D Game Master voice agent, providing an immersive visual interface for your fantasy adventures.
+> See the [main README](../README.md) for complete setup instructions and project overview.
 
-This is a starter template for [LiveKit Agents](https://docs.livekit.io/agents) that provides a simple voice interface using the [LiveKit JavaScript SDK](https://github.com/livekit/client-sdk-js). It supports [voice](https://docs.livekit.io/agents/start/voice-ai), [transcriptions](https://docs.livekit.io/agents/build/text/), and [virtual avatars](https://docs.livekit.io/agents/integrations/avatar).
+An interactive web application built with Next.js and React that brings your D&D adventure to life. Features real-time voice interaction with an AI Game Master, dynamic world state visualization, and a beautiful fantasy-themed interface.
 
 **Based on:** [livekit-examples/agent-starter-react](https://github.com/livekit-examples/agent-starter-react)
 
-Also available for:
-[Android](https://github.com/livekit-examples/agent-starter-android) • [Flutter](https://github.com/livekit-examples/agent-starter-flutter) • [Swift](https://github.com/livekit-examples/agent-starter-swift) • [React Native](https://github.com/livekit-examples/agent-starter-react-native)
+**Technologies:** Next.js 14 • React 18 • TypeScript • LiveKit Client SDK • TailwindCSS
 
 <picture>
   <source srcset="./.github/assets/readme-hero-dark.webp" media="(prefers-color-scheme: dark)">
@@ -20,110 +19,265 @@ Also available for:
 
 ### Features:
 
-- Real-time voice interaction with LiveKit Agents
-- Camera video streaming support
-- Screen sharing capabilities
-- Audio visualization and level monitoring
-- Virtual avatar integration
-- Light/dark theme switching with system preference detection
-- Customizable branding, colors, and UI text via configuration
+- 🎙️ **Real-time Voice Interaction** - Natural conversation with your AI Game Master
+- 📊 **Live Game Panels** - Dynamic character stats, inventory, NPCs, and quest tracking
+- 🎨 **Fantasy-Themed UI** - Immersive backgrounds and responsive design
+- 💬 **Chat Transcript** - Complete conversation history with auto-scroll
+- 🌓 **Theme Support** - Dark/light mode with system preference detection
+- 🎮 **Interactive Inventory** - Detailed item information with modals
+- 📱 **Responsive Design** - Optimized for desktop, tablet, and mobile
+- ⚡ **Real-time Updates** - World state syncs instantly via LiveKit data channels
+- 🔧 **Customizable** - Easy branding and configuration via `app-config.ts`
 
-This template is built with Next.js and is free for you to use or modify as you see fit.
-
-### Project structure
+### Project Structure
 
 ```
-agent-starter-react/
+frontend/
 ├── app/
-│   ├── (app)/
+│   ├── (app)/              # Main app routes
+│   │   ├── layout.tsx      # Game layout wrapper
+│   │   ├── page.tsx        # Landing page
+│   │   └── opengraph-image.tsx
 │   ├── api/
-│   ├── components/
-│   ├── fonts/
-│   ├── globals.css
-│   └── layout.tsx
+│   │   └── connection-details/  # LiveKit token generation
+│   └── ui/                 # UI-only routes
 ├── components/
-│   ├── livekit/
-│   ├── ui/
-│   ├── app.tsx
-│   ├── session-view.tsx
-│   └── welcome.tsx
+│   ├── app/                # D&D Game components
+│   │   ├── character-panel.tsx    # Player stats & inventory
+│   │   ├── npc-panel.tsx          # NPC tracker
+│   │   ├── quests-panel.tsx       # Quest log
+│   │   ├── chat-transcript.tsx    # Message history
+│   │   ├── session-view.tsx       # Main game view
+│   │   ├── welcome-view.tsx       # Pre-connection screen
+│   │   └── tile-layout.tsx        # Layout manager
+│   └── livekit/            # LiveKit UI components
+│       ├── agent-control-bar/
+│       ├── scroll-area/
+│       └── chat-entry.tsx
 ├── hooks/
-├── lib/
+│   ├── useWorldStateFromMessages.ts  # World state sync
+│   ├── useChatMessages.ts            # Chat management
+│   ├── useRoom.ts                     # LiveKit room logic
+│   └── useDebug.ts
 ├── public/
+│   ├── bg-desktop.png      # Fantasy background (desktop)
+│   ├── bg-mobile.png       # Fantasy background (mobile)
+│   └── opengraph-image-bg.png
+├── styles/
+│   └── globals.css         # Global styles & theme
+├── app-config.ts           # App configuration
 └── package.json
 ```
 
-## Getting started
+## Getting Started
 
-> [!TIP]
-> If you'd like to try this application without modification, you can deploy an instance in just a few clicks with [LiveKit Cloud Sandbox](https://cloud.livekit.io/projects/p_/sandbox/templates/agent-starter-react).
+### Prerequisites
 
-[![Open on LiveKit](https://img.shields.io/badge/Open%20on%20LiveKit%20Cloud-002CF2?style=for-the-badge&logo=external-link)](https://cloud.livekit.io/projects/p_/sandbox/templates/agent-starter-react)
+- Node.js 18+ installed
+- pnpm package manager (`npm install -g pnpm`)
+- LiveKit credentials (API key, secret, and URL)
+- Backend agent running (see [backend README](../backend/README.md))
 
-Run the following command to automatically clone this template.
-
-```bash
-lk app create --template agent-starter-react
-```
-
-Then run the app with:
+### Installation
 
 ```bash
+# Install dependencies
 pnpm install
-pnpm dev
+
+# Copy environment template
+cp .env.example .env.local
+
+# Edit .env.local with your LiveKit credentials
+# LIVEKIT_URL=ws://localhost:7880
+# LIVEKIT_API_KEY=your_api_key
+# LIVEKIT_API_SECRET=your_api_secret
 ```
 
-And open http://localhost:3000 in your browser.
+### Development
 
-You'll also need an agent to speak with. Try our starter agent for [Python](https://github.com/livekit-examples/agent-starter-python), [Node.js](https://github.com/livekit-examples/agent-starter-node), or [create your own from scratch](https://docs.livekit.io/agents/start/voice-ai/).
+```bash
+# Start the development server
+pnpm dev
+
+# Open in your browser
+# http://localhost:3000
+```
+
+### Production Build
+
+```bash
+# Create optimized production build
+pnpm build
+
+# Start production server
+pnpm start
+```
+
+### Docker
+
+```bash
+# Build the Docker image
+docker build -t dnd-gamemaster-frontend .
+
+# Run the container
+docker run -p 3000:3000 --env-file .env.prod dnd-gamemaster-frontend
+
+# Or use docker-compose from root directory
+cd ..
+docker-compose up frontend
+```
+
+> **Note:** The backend agent must be running for the voice interaction to work. See the [main README](../README.md) for complete setup instructions.
 
 ## Configuration
 
-This starter is designed to be flexible so you can adapt it to your specific agent use case. You can easily configure it to work with different types of inputs and outputs:
+### App Configuration (`app-config.ts`)
 
-#### Example: App configuration (`app-config.ts`)
+Customize the game's branding and features:
 
 ```ts
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: 'LiveKit',
-  pageTitle: 'LiveKit Voice Agent',
-  pageDescription: 'A voice agent built with LiveKit',
+  companyName: 'Venom120',
+  pageTitle: 'D&D Game Master',
+  pageDescription: 'An interactive voice-controlled fantasy adventure game powered by AI',
 
-  supportsChatInput: true,
-  supportsVideoInput: true,
-  supportsScreenShare: true,
-  isPreConnectBufferEnabled: true,
+  supportsChatInput: true,      // Enable text chat
+  supportsVideoInput: false,    // Disable video (voice-only)
+  supportsScreenShare: false,   // Disable screen sharing
+  isPreConnectBufferEnabled: true,  // Pre-connect audio buffer
 
   logo: '/lk-logo.svg',
-  accent: '#002cf2',
+  accent: '#9333ea',            // Purple theme for fantasy feel
   logoDark: '/lk-logo-dark.svg',
-  accentDark: '#1fd5f9',
-  startButtonText: 'Start call',
+  accentDark: '#a855f7',
+  startButtonText: 'Begin Adventure',  // Custom CTA
 
-  // for LiveKit Cloud Sandbox
   sandboxId: undefined,
   agentName: undefined,
 };
 ```
 
-You can update these values in [`app-config.ts`](./app-config.ts) to customize branding, features, and UI text for your deployment.
+### Customization Options
 
-> [!NOTE]
-> The `sandboxId` and `agentName` are for the LiveKit Cloud Sandbox environment.
-> They are not used for local development.
+- **Branding**: Update `pageTitle`, `companyName`, and logos
+- **Theme Colors**: Change `accent` and `accentDark` for different color schemes
+- **Features**: Toggle `supportsChatInput`, `supportsVideoInput`, `supportsScreenShare`
+- **Backgrounds**: Replace `bg-desktop.png` and `bg-mobile.png` in `/public`
+- **Styles**: Modify `styles/globals.css` for custom themes
 
-#### Environment Variables
+### Environment Variables
 
-You'll also need to configure your LiveKit credentials in `.env.local` (copy `.env.example` if you don't have one):
+Create `.env.local` (development) or `.env.prod` (production):
 
 ```env
-LIVEKIT_API_KEY=your_livekit_api_key
-LIVEKIT_API_SECRET=your_livekit_api_secret
-LIVEKIT_URL=https://your-livekit-server-url
+# LiveKit Connection (must match backend)
+LIVEKIT_URL=ws://localhost:7880
+LIVEKIT_API_KEY=your_api_key
+LIVEKIT_API_SECRET=your_api_secret
+
+# Optional: For production deployment
+# LIVEKIT_URL=wss://your-livekit-cloud.livekit.cloud
 ```
 
-These are required for the voice agent functionality to work with your LiveKit project.
+**Important:** These credentials must match your backend configuration for the agent to connect properly.
+
+## Key Components
+
+### Character Panel
+Displays player stats including:
+- Name, class, level, and XP
+- HP and status (Healthy/Unconscious)
+- Attributes (Strength, Intelligence, Luck)
+- Interactive inventory with detailed item modals
+
+### NPC Panel
+Tracks encountered NPCs:
+- Expandable cards with full details
+- Role, attitude, and location
+- Alive/dead status
+- Character descriptions
+
+### Quests Panel
+Manages your adventure objectives:
+- Active quests with descriptions
+- Completed quests log
+- Quest status tracking
+
+### Chat Transcript
+Conversation history:
+- GM narration and player responses
+- Auto-scrolling with manual override
+- Persistent throughout session
+
+### World State Synchronization
+Real-time updates via LiveKit data channels:
+```typescript
+// Automatically syncs from backend via useWorldStateFromMessages hook
+const worldState = useWorldStateFromMessages(chatMessages);
+```
+
+## Development
+
+### Hot Reloading
+Next.js Fast Refresh enables instant updates during development:
+- Component changes reflect immediately
+- State is preserved across reloads
+- No manual refresh needed
+
+### Debugging
+```bash
+# Enable debug mode
+export DEBUG=livekit*
+pnpm dev
+
+# Check browser console for:
+# - LiveKit connection logs
+# - World state updates
+# - WebRTC connection status
+```
+
+### Adding Custom Components
+1. Create component in `components/app/`
+2. Import in `session-view.tsx`
+3. Add to tile layout
+4. Connect to world state via hooks
+
+## Troubleshooting
+
+**Issue: "Failed to connect to agent"**
+- Verify backend agent is running
+- Check `.env.local` credentials match backend
+- Ensure LiveKit server is accessible
+
+**Issue: "World state not updating"**
+- Check browser console for data channel messages
+- Verify backend is calling function tools
+- Inspect network tab for LiveKit data packets
+
+**Issue: "Microphone not working"**
+- Grant browser microphone permissions
+- Check browser compatibility (Chrome/Edge recommended)
+- Verify microphone is not in use by another app
+
+## Resources
+
+- [Main Project README](../README.md)
+- [Backend Documentation](../backend/README.md)
+- [LiveKit Docs](https://docs.livekit.io/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [TailwindCSS](https://tailwindcss.com/docs)
 
 ## Contributing
 
-This template is open source and we welcome contributions! Please open a PR or issue through GitHub, and don't forget to join us in the [LiveKit Community Slack](https://livekit.io/join-slack)!
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+For major changes, open an issue first to discuss proposed modifications.
+
+## License
+
+This project is based on MIT-licensed templates from LiveKit. See [LICENSE](../LICENSE) for details.

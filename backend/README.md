@@ -2,29 +2,43 @@
   <img src="./.github/assets/livekit-mark.png" alt="LiveKit logo" width="100" height="100">
 </a>
 
-# LiveKit Agents Starter - Python (with Murf Falcon TTS)
+# D&D Game Master - Backend
 
-> 🎙️ **This is part of the AI Voice Agents Challenge by murf.ai**
+> 🎮 **AI-Powered Dungeon Master**
 >
-> This backend is configured to use **Murf Falcon** - the consistently fastest TTS API - for ultra-fast voice synthesis.
-> See the [main README](../README.md) for complete setup instructions and challenge details.
+> This backend implements an intelligent D&D Game Master using LiveKit Agents, featuring dynamic storytelling, world state management, and real-time voice interaction.
+> See the [main README](../README.md) for complete setup instructions and project overview.
 
-A complete starter project for building voice AI apps with [LiveKit Agents for Python](https://github.com/livekit/agents) and [LiveKit Cloud](https://cloud.livekit.io/).
+A sophisticated Python-based LiveKit Agent that serves as your personal Dungeon Master, managing game state, NPCs, quests, inventory, and narrating your fantasy adventure in real-time.
 
 **Based on:** [livekit-examples/agent-starter-python](https://github.com/livekit-examples/agent-starter-python)
 
-The starter project includes:
+## Features
 
-- A simple voice AI assistant, ready for extension and customization
-- A voice AI pipeline with [models](https://docs.livekit.io/agents/models) from OpenAI, Cartesia, and AssemblyAI served through LiveKit Cloud
-  - Easily integrate your preferred [LLM](https://docs.livekit.io/agents/models/llm/), [STT](https://docs.livekit.io/agents/models/stt/), and [TTS](https://docs.livekit.io/agents/models/tts/) instead, or swap to a realtime model like the [OpenAI Realtime API](https://docs.livekit.io/agents/models/realtime/openai)
-- Eval suite based on the LiveKit Agents [testing & evaluation framework](https://docs.livekit.io/agents/build/testing/)
-- [LiveKit Turn Detector](https://docs.livekit.io/agents/build/turns/turn-detector/) for contextually-aware speaker detection, with multilingual support
-- [Background voice cancellation](https://docs.livekit.io/home/cloud/noise-cancellation/)
-- Integrated [metrics and logging](https://docs.livekit.io/agents/build/metrics/)
-- A Dockerfile ready for [production deployment](https://docs.livekit.io/agents/ops/deployment/)
+### Voice AI Pipeline
+- **Murf Falcon TTS** - Ultra-fast, natural text-to-speech for GM narration
+- **Google Gemini 2.5 Flash** - Advanced LLM for dynamic storytelling
+- **Deepgram Nova 3** - High-accuracy speech-to-text
+- **Silero VAD** - Voice activity detection
+- **Multilingual Turn Detector** - Context-aware conversation flow
+- **Background Noise Cancellation** - Clean audio processing
 
-This starter app is compatible with any [custom web/mobile frontend](https://docs.livekit.io/agents/start/frontend/) or [SIP-based telephony](https://docs.livekit.io/agents/start/telephony/).
+### Game Master Capabilities
+- 🎭 **Dynamic Storytelling** - Generates immersive D&D narratives
+- 🗺️ **World State Management** - Tracks entire game state in memory
+- 📦 **Advanced Inventory System** - Items with durability, weight, value
+- ⚔️ **Combat Mechanics** - HP tracking and item durability
+- 🧙 **NPC Management** - Creates and tracks NPCs with personalities
+- 📜 **Quest System** - Active and completed quest tracking
+- 🔧 **Function Tools** - Real-time state updates via specialized functions
+- 📡 **Live Broadcasting** - Pushes updates to frontend via data channels
+
+### Technical Features
+- Complete test suite with evaluation framework
+- Integrated metrics and logging
+- Production-ready Dockerfile
+- Compatible with web/mobile frontends
+- MCP server support for coding agents
 
 ## Coding agents and MCP
 
@@ -56,95 +70,352 @@ gemini mcp add --transport http livekit-docs https://docs.livekit.io/mcp
 
 The project includes a complete [AGENTS.md](AGENTS.md) file for these assistants. You can modify this file your needs. To learn more about this file, see [https://agents.md](https://agents.md).
 
-## Dev Setup
+## Getting Started
 
-Clone the repository and install dependencies to a virtual environment:
+### Prerequisites
 
-```console
-cd agent-starter-python
+- Python 3.10 or higher
+- [uv](https://docs.astral.sh/uv/) package manager
+- LiveKit server (local or cloud)
+- API keys for:
+  - LiveKit (URL, API key, API secret)
+  - Murf.ai (for Falcon TTS)
+  - Google (for Gemini LLM)
+  - Deepgram (for Nova 3 STT)
+
+### Installation
+
+```bash
+cd backend
+
+# Install dependencies with uv
 uv sync
+
+# Copy environment template
+cp .env.example .env.local
+
+# Edit .env.local with your API keys
+# LIVEKIT_URL=ws://localhost:7880
+# LIVEKIT_API_KEY=your_key
+# LIVEKIT_API_SECRET=your_secret
+# MURF_API_KEY=your_murf_key
+# GOOGLE_API_KEY=your_google_key
+# DEEPGRAM_API_KEY=your_deepgram_key
 ```
 
-Sign up for [LiveKit Cloud](https://cloud.livekit.io/) then set up the environment by copying `.env.example` to `.env.local` and filling in the required keys:
+### Using LiveKit Cloud (Optional)
 
-- `LIVEKIT_URL`
-- `LIVEKIT_API_KEY`
-- `LIVEKIT_API_SECRET`
-
-You can load the LiveKit environment automatically using the [LiveKit CLI](https://docs.livekit.io/home/cli/cli-setup):
+Automatically load credentials using the [LiveKit CLI](https://docs.livekit.io/home/cli/cli-setup):
 
 ```bash
 lk cloud auth
 lk app env -w -d .env.local
 ```
 
-## Run the agent
+## Running the Agent
 
-Before your first run, you must download certain models such as [Silero VAD](https://docs.livekit.io/agents/build/turns/vad/) and the [LiveKit turn detector](https://docs.livekit.io/agents/build/turns/turn-detector/):
+### Download Required Models
 
-```console
+Before first run, download AI models ([Silero VAD](https://docs.livekit.io/agents/build/turns/vad/) and [Turn Detector](https://docs.livekit.io/agents/build/turns/turn-detector/)):
+
+```bash
 uv run python src/agent.py download-files
 ```
 
-Next, run this command to speak to your agent directly in your terminal:
+### Development Mode
 
-```console
-uv run python src/agent.py console
-```
+Run the agent and connect with the frontend:
 
-To run the agent for use with a frontend or telephony, use the `dev` command:
-
-```console
+```bash
 uv run python src/agent.py dev
 ```
 
-In production, use the `start` command:
+This starts the agent in development mode, listening for connections from the frontend or other clients.
 
-```console
+### Console Mode (Testing)
+
+Test the Game Master directly in your terminal:
+
+```bash
+uv run python src/agent.py console
+```
+
+Speak to the agent using your microphone without needing the frontend.
+
+### Production Mode
+
+For production deployment:
+
+```bash
 uv run python src/agent.py start
 ```
 
-## Frontend & Telephony
+### Docker
 
-Get started quickly with our pre-built frontend starter apps, or add telephony support:
+```bash
+# Build the Docker image
+docker build -t dnd-gamemaster-backend .
 
-| Platform         | Link                                                                                                                | Description                                        |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| **Web**          | [`livekit-examples/agent-starter-react`](https://github.com/livekit-examples/agent-starter-react)                   | Web voice AI assistant with React & Next.js        |
-| **iOS/macOS**    | [`livekit-examples/agent-starter-swift`](https://github.com/livekit-examples/agent-starter-swift)                   | Native iOS, macOS, and visionOS voice AI assistant |
-| **Flutter**      | [`livekit-examples/agent-starter-flutter`](https://github.com/livekit-examples/agent-starter-flutter)               | Cross-platform voice AI assistant app              |
-| **React Native** | [`livekit-examples/voice-assistant-react-native`](https://github.com/livekit-examples/voice-assistant-react-native) | Native mobile app with React Native & Expo         |
-| **Android**      | [`livekit-examples/agent-starter-android`](https://github.com/livekit-examples/agent-starter-android)               | Native Android app with Kotlin & Jetpack Compose   |
-| **Web Embed**    | [`livekit-examples/agent-starter-embed`](https://github.com/livekit-examples/agent-starter-embed)                   | Voice AI widget for any website                    |
-| **Telephony**    | [📚 Documentation](https://docs.livekit.io/agents/start/telephony/)                                                 | Add inbound or outbound calling to your agent      |
+# Run the container
+docker run --env-file .env.prod dnd-gamemaster-backend
 
-For advanced customization, see the [complete frontend guide](https://docs.livekit.io/agents/start/frontend/).
-
-## Tests and evals
-
-This project includes a complete suite of evals, based on the LiveKit Agents [testing & evaluation framework](https://docs.livekit.io/agents/build/testing/). To run them, use `pytest`.
-
-```console
-uv run pytest
+# Or use docker-compose from root
+cd ..
+docker-compose up backend
 ```
 
-## Using this template repo for your own project
+## Game Master Architecture
 
-Once you've started your own project based on this repo, you should:
+### World State Management
 
-1. **Check in your `uv.lock`**: This file is currently untracked for the template, but you should commit it to your repository for reproducible builds and proper configuration management. (The same applies to `livekit.toml`, if you run your agents in LiveKit Cloud)
+The agent maintains a complete game state in memory:
 
-2. **Remove the git tracking test**: Delete the "Check files not tracked in git" step from `.github/workflows/tests.yml` since you'll now want this file to be tracked. These are just there for development purposes in the template repo itself.
+```python
+self.world_state = {
+    "player": {
+        "name": "Adventurer",
+        "class": "Wanderer",
+        "hp": 100,
+        "status": "Healthy",
+        "attributes": {"Strength": 10, "Intelligence": 10, "Luck": 10},
+        "inventory": []
+    },
+    "npcs": {},
+    "locations": {},
+    "events": [],
+    "quests": {"active": [], "completed": []}
+}
+```
 
-3. **Add your own repository secrets**: You must [add secrets](https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-what-your-workflow-does/using-secrets-in-github-actions) for `LIVEKIT_URL`, `LIVEKIT_API_KEY`, and `LIVEKIT_API_SECRET` so that the tests can run in CI.
+### Function Tools
 
-## Deploying to production
+The GM uses specialized function tools to update game state:
 
-This project is production-ready and includes a working `Dockerfile`. To deploy it to LiveKit Cloud or another environment, see the [deploying to production](https://docs.livekit.io/agents/ops/deployment/) guide.
+```python
+# NPC Management
+@function_tool
+async def update_npc(name: str, data: dict):
+    """Create or update an NPC with role, attitude, location"""
 
-## Self-hosted LiveKit
+# Inventory Management  
+@function_tool
+async def give_item(item: dict):
+    """Add items with durability, weight, value, descriptions"""
 
-You can also self-host LiveKit instead of using LiveKit Cloud. See the [self-hosting](https://docs.livekit.io/home/self-hosting/) guide for more information. If you choose to self-host, you'll need to also use [model plugins](https://docs.livekit.io/agents/models/#plugins) instead of LiveKit Inference and will need to remove the [LiveKit Cloud noise cancellation](https://docs.livekit.io/home/cloud/noise-cancellation/) plugin.
+# Health Management
+@function_tool
+async def change_hp(amount: int, reason: str):
+    """Modify player HP with automatic status updates"""
+
+# Quest Management
+@function_tool
+async def apply_world_patch(patch: dict):
+    """Apply bulk updates to world state"""
+```
+
+### Real-time Broadcasting
+
+State changes are broadcast to all connected clients via LiveKit data channels:
+
+```python
+def broadcast_world_state(self):
+    """Send current world_state to frontend via data channel"""
+    payload = json.dumps(self.world_state).encode('utf-8')
+    await self._room.local_participant.publish_data(
+        payload=payload,
+        topic="world_state",
+        reliable=True
+    )
+```
+
+## Frontend Integration
+
+This backend works with the included Next.js frontend in `../frontend/`:
+- Real-time world state synchronization
+- Character, NPC, and quest panels
+- Voice interaction interface
+- See [frontend README](../frontend/README.md) for details
+
+## Testing
+
+Run the test suite using pytest:
+
+```bash
+# Run all tests
+uv run pytest
+
+# Run with coverage
+uv run pytest --cov
+
+# Run specific test file
+uv run pytest tests/test_agent.py
+
+# Verbose output
+uv run pytest -v
+```
+
+Tests include:
+- Agent initialization
+- Function tool validation
+- World state management
+- NPC and inventory operations
+- Quest tracking logic
+
+See [LiveKit testing documentation](https://docs.livekit.io/agents/build/testing/) for more details.
+
+## Customization
+
+### Modifying the Game Master Personality
+
+Edit the `instructions` prompt in `src/agent.py`:
+
+```python
+class Assistant(Agent):
+    def __init__(self, room=None) -> None:
+        super().__init__(
+            instructions="""You are an epic Game Master...
+            
+            # Customize the setting, tone, and rules here
+            """)
+```
+
+### Adding New Function Tools
+
+Create custom game mechanics:
+
+```python
+@function_tool
+async def cast_spell(self, spell_name: str, target: str):
+    """Custom spell-casting mechanic"""
+    # Your logic here
+    pass
+```
+
+### Changing AI Models
+
+Swap TTS, STT, or LLM providers in the `entrypoint` function:
+
+```python
+session = AgentSession(
+    # Change STT provider
+    stt=deepgram.STT(model="nova-3"),
+    
+    # Change LLM provider  
+    llm=google.LLM(model="gemini-2.5-flash"),
+    
+    # Change TTS provider
+    tts=murf.TTS(voice="en-US-matthew"),
+)
+```
+
+See [LiveKit model documentation](https://docs.livekit.io/agents/models/) for available options.
+
+## Debugging
+
+Enable verbose logging:
+
+```bash
+# Set log level
+export LIVEKIT_LOG_LEVEL=debug
+uv run python src/agent.py dev
+
+# Or use Python logging
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
+
+Check logs for:
+- Function tool calls
+- World state changes
+- LLM responses
+- Audio pipeline events
+
+## Deployment
+
+### Production Deployment
+
+This project is production-ready with a working `Dockerfile`:
+
+```bash
+# Build production image
+docker build -t dnd-gamemaster-backend .
+
+# Run with production config
+docker run -d \
+  --env-file .env.prod \
+  --name gamemaster-agent \
+  dnd-gamemaster-backend
+```
+
+See [LiveKit deployment guide](https://docs.livekit.io/agents/ops/deployment/) for cloud deployment options.
+
+### Environment Variables (Production)
+
+Create `.env.prod` for production:
+
+```env
+LIVEKIT_URL=wss://your-livekit-cloud.livekit.cloud
+LIVEKIT_API_KEY=your_production_key
+LIVEKIT_API_SECRET=your_production_secret
+MURF_API_KEY=your_murf_production_key
+GOOGLE_API_KEY=your_google_production_key
+DEEPGRAM_API_KEY=your_deepgram_production_key
+```
+
+### Self-hosted LiveKit
+
+You can self-host LiveKit instead of using LiveKit Cloud:
+- See [self-hosting guide](https://docs.livekit.io/home/self-hosting/)
+- Use [model plugins](https://docs.livekit.io/agents/models/#plugins) for local inference
+- Remove noise cancellation plugin if not using LiveKit Cloud
+
+## Troubleshooting
+
+**Agent won't start:**
+- Verify all API keys in `.env.local`
+- Check LiveKit server is running
+- Ensure models are downloaded (`download-files`)
+
+**No audio/TTS issues:**
+- Verify Murf API key is valid
+- Check network connectivity
+- Review logs for TTS errors
+
+**World state not broadcasting:**
+- Confirm frontend is connected
+- Check data channel permissions
+- Verify `broadcast_world_state()` is called
+
+**Function tools not working:**
+- Check LLM is calling tools correctly
+- Review function signatures match instructions
+- Enable debug logging to see tool calls
+
+## Resources
+
+- [Main Project README](../README.md)
+- [Frontend Documentation](../frontend/README.md)
+- [LiveKit Agents Documentation](https://docs.livekit.io/agents)
+- [Murf Falcon TTS Docs](https://murf.ai/api/docs)
+- [Google Gemini API](https://ai.google.dev/docs)
+- [Deepgram API](https://developers.deepgram.com/)
+
+## Contributing
+
+We welcome contributions!
+
+1. Fork the repository
+2. Create a feature branch
+3. Implement your changes
+4. Add/update tests
+5. Submit a pull request
+
+### Ideas for Contributions
+- Additional game mechanics (magic, crafting)
+- More robust combat system
+- Save/load game state
+- Multiple campaign settings
+- Voice cloning for NPCs
 
 ## License
 
