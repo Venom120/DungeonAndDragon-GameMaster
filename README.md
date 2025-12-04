@@ -47,7 +47,8 @@ D&D-GameMaster/
 │   └── .env.local       # Environment configuration
 ├── docker-compose.yml   # Docker orchestration
 ├── start_app.sh         # Quick start script
-└── README.md           # This file
+├── Demo.mp4             # Demo Video
+└── README.md            # This file
 ```
 
 ### Backend - The Game Master Brain
