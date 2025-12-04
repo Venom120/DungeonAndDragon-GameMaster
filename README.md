@@ -174,8 +174,8 @@ Create environment files for both backend and frontend:
 ```bash
 # Backend environment
 cd backend
-cp .env.example .env.prod
-# Edit .env.prod with your API keys:
+cp .env.example .env.local
+# Edit .env.local with your API keys:
 # - LIVEKIT_URL=ws://localhost:7880
 # - LIVEKIT_API_KEY=<your-key>
 # - LIVEKIT_API_SECRET=<your-secret>
@@ -185,8 +185,8 @@ cp .env.example .env.prod
 
 # Frontend environment
 cd ../frontend
-cp .env.example .env.prod
-# Edit .env.prod with the same LiveKit credentials
+cp .env.example .env.local
+# Edit .env.local with the same LiveKit credentials
 ```
 
 ### Step 2: Start with Docker Compose
@@ -331,7 +331,7 @@ This script will:
 
 ## Environment Variables Reference
 
-### Backend (.env.local or .env.prod)
+### Backend (.env.local or .env.local)
 
 ```env
 # LiveKit Configuration
@@ -345,7 +345,7 @@ GOOGLE_API_KEY=your_google_api_key       # For Gemini LLM
 DEEPGRAM_API_KEY=your_deepgram_api_key   # For Nova 3 STT
 ```
 
-### Frontend (.env.local or .env.prod)
+### Frontend (.env.local or .env.local)
 
 ```env
 # Must match backend LiveKit configuration
@@ -461,7 +461,7 @@ Both backend and frontend support hot reloading during development:
 **Docker containers not starting:**
 - Run `docker-compose down -v` to clean volumes
 - Check Docker daemon is running
-- Verify `.env.prod` files exist and are configured
+- Verify `.env.local` files exist and are configured
 
 **World state not updating:**
 - Check backend logs for function call errors

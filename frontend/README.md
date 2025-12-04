@@ -120,7 +120,7 @@ pnpm start
 docker build -t dnd-gamemaster-frontend .
 
 # Run the container
-docker run -p 3000:3000 --env-file .env.prod dnd-gamemaster-frontend
+docker run -p 3000:3000 --env-file .env.local dnd-gamemaster-frontend
 
 # Or use docker-compose from root directory
 cd ..
@@ -167,7 +167,7 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
 
 ### Environment Variables
 
-Create `.env.local` (development) or `.env.prod` (production):
+Create `.env.local` (development):
 
 ```env
 # LiveKit Connection (must match backend)
