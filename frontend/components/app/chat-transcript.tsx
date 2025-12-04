@@ -23,7 +23,7 @@ const CONTAINER_MOTION_PROPS = {
     duration: 0.3,
     ease: 'easeOut',
   },
-};
+} as const;
 
 const MESSAGE_MOTION_PROPS = {
   variants: {
@@ -44,7 +44,7 @@ const MESSAGE_MOTION_PROPS = {
     ease: 'easeOut',
   },
   layout: true,
-};
+} as const;
 
 interface ChatTranscriptProps {
   hidden?: boolean;

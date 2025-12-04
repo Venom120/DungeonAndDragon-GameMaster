@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { UserIcon, HeartIcon, SwordIcon, BackpackIcon, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 interface AttributeMap {
@@ -14,13 +16,26 @@ interface PlayerDetails {
   [key: string]: any;
 }
 
+interface InventoryItem {
+  name: string;
+  qty?: number;
+  desc?: string;
+  durability?: number;
+  weight?: number;
+  value?: number;
+  type?: string;
+  damage?: string;
+  armor_class?: number;
+  properties?: string[];
+}
+
 interface PlayerState {
   name: string;
   class?: string;
   hp: number;
   status?: string;
   attributes?: AttributeMap;
-  inventory?: Array<{ name: string; qty?: number; desc?: string; durability?: number; weight?: number; value?: number }>;
+  inventory?: InventoryItem[];
   details?: PlayerDetails;
 }
 
@@ -38,115 +53,293 @@ export function CharacterPanel({ player }: CharacterPanelProps) {
     details: {},
   };
 
-  const [selectedItem, setSelectedItem] = useState<{ name: string; qty?: number; desc?: string; durability?: number; weight?: number; value?: number } | null>(null);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  const maxHp = 100; // Could be dynamic based on player data
+  const hpPercentage = (p.hp / maxHp) * 100;
 
   return (
-    <div className="pointer-events-auto relative w-64 rounded-md border border-input/30 bg-background/80 p-4 shadow-md">
-      <div className="flex items-start justify-between">
-        <h3 className="text-lg font-semibold">{p.name} — {p.class}</h3>
-        <div className="text-sm text-muted-foreground text-right">
-          {p.details?.level != null && <div>Level {p.details.level}</div>}
-          {p.details?.xp != null && <div>{p.details.xp} XP</div>}
-        </div>
-      </div>
-      <div className="mt-2 text-sm">
-        {p.details?.bio && <div className="mb-2 text-sm italic text-muted-foreground">{p.details.bio}</div>}
-        <div className="flex items-center justify-between">
-          <span className="font-mono">HP</span>
-          <span className="font-bold">{p.hp} ({p.status ?? 'Unknown'})</span>
-        </div>
-
-        <div className="mt-3">
-          <div className="text-xs text-muted-foreground">Attributes</div>
-          <ul className="mt-1 space-y-1">
-            {Object.entries(p.attributes || {}).map(([k, v]) => (
-              <li key={k} className="flex justify-between text-sm">
-                <span>{k}</span>
-                <span className="font-mono">{v}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-3">
-          <div className="text-xs text-muted-foreground">Inventory</div>
-          {(!p.inventory || p.inventory.length === 0) ? (
-            <div className="mt-1 text-sm italic text-muted-foreground">(empty)</div>
-          ) : (
-            <ul className="mt-1 space-y-1">
-              {p.inventory!.map((it, i) => (
-                <li key={i} className="flex justify-between text-sm">
-                  <button
-                    onClick={() => setSelectedItem(it)}
-                    className="text-left hover:text-primary cursor-pointer underline decoration-dotted"
-                  >
-                    {it.name}
-                  </button>
-                  <span className="font-mono">{it.qty ?? 1}</span>
-                </li>
-              ))}
-            </ul>
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="pointer-events-auto relative w-72 rounded-lg border-2 border-border/40 bg-card/90 backdrop-blur-sm p-5 shadow-xl parchment hover-lift"
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4 pb-3 border-b border-border/30">
+          <div className="flex items-center gap-2">
+            <UserIcon size={24} weight="duotone" className="text-primary" />
+            <div>
+              <h3 className="text-xl font-bold text-foreground font-serif">{p.name}</h3>
+              <p className="text-sm text-muted-foreground">{p.class}</p>
+            </div>
+          </div>
+          {p.details?.level && (
+            <div className="text-center px-3 py-1 rounded-full bg-secondary/20 border border-secondary/40">
+              <span className="text-xs text-secondary-foreground font-bold">LV {p.details.level}</span>
+            </div>
           )}
         </div>
 
-        {/* Debug: Raw player data */}
-        {/* <div className="mt-3 border-t pt-2">
-          <div className="text-xs text-muted-foreground">Debug: Player Data</div>
-          <pre className="mt-1 text-xs bg-muted p-1 rounded overflow-auto max-h-20">
-            {JSON.stringify(p, null, 2)}
-          </pre>
-        </div> */}
-      </div>
+        {/* Bio */}
+        {p.details?.bio && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="mb-4 text-xs italic text-muted-foreground p-2 rounded bg-background/30 border-l-2 border-primary/40"
+          >
+            {p.details.bio}
+          </motion.div>
+        )}
 
-      {/* Inventory Item Modal */}
-      {selectedItem && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background border border-input rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="flex items-start justify-between mb-4">
-              <h4 className="text-lg font-semibold">{selectedItem.name}</h4>
-              <button
-                onClick={() => setSelectedItem(null)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                ✕
-              </button>
+        {/* HP Bar */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <HeartIcon size={18} weight="fill" className="text-red-500" />
+              <span className="text-sm font-semibold text-foreground">Health</span>
             </div>
-            <div className="space-y-2 text-sm">
-              {selectedItem.desc && (
-                <div>
-                  <div className="font-medium">Description</div>
-                  <div className="text-muted-foreground">{selectedItem.desc}</div>
-                </div>
+            <span className="text-sm font-bold font-mono">
+              <span className={cn(
+                "transition-colors",
+                p.hp <= 25 ? "text-red-500 animate-pulse" : "text-foreground"
+              )}>
+                {p.hp}
+              </span>
+              <span className="text-muted-foreground"> / {maxHp}</span>
+            </span>
+          </div>
+          <div className="h-3 rounded-full bg-background/50 border border-border/30 overflow-hidden">
+            <motion.div
+              className={cn(
+                "h-full hp-bar rounded-full",
+                p.hp <= 25 && "animate-pulse"
               )}
-              {selectedItem.qty != null && (
-                <div className="flex justify-between">
-                  <span>Quantity</span>
-                  <span className="font-mono">{selectedItem.qty}</span>
-                </div>
-              )}
-              {selectedItem.durability != null && (
-                <div className="flex justify-between">
-                  <span>Durability</span>
-                  <span className="font-mono">{selectedItem.durability}</span>
-                </div>
-              )}
-              {selectedItem.weight != null && (
-                <div className="flex justify-between">
-                  <span>Weight</span>
-                  <span className="font-mono">{selectedItem.weight}</span>
-                </div>
-              )}
-              {selectedItem.value != null && (
-                <div className="flex justify-between">
-                  <span>Value</span>
-                  <span className="font-mono">{selectedItem.value}</span>
-                </div>
-              )}
-            </div>
+              initial={{ width: 0 }}
+              animate={{ width: `${hpPercentage}%` }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
+          </div>
+          <div className="mt-1 text-xs text-center">
+            <span className={cn(
+              "font-medium",
+              p.status === "Healthy" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+            )}>
+              {p.status}
+            </span>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* XP Progress (if applicable) */}
+        {p.details?.xp !== undefined && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mb-4"
+          >
+            <div className="flex justify-between text-xs mb-1">
+              <span className="text-muted-foreground">Experience</span>
+              <span className="font-mono text-foreground">{p.details.xp} XP</span>
+            </div>
+            <div className="h-2 rounded-full bg-background/50 border border-border/30 overflow-hidden">
+              <div className="h-full bg-linear-to-r from-secondary to-gold" style={{ width: '60%' }} />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Attributes */}
+        {Object.keys(p.attributes || {}).length > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <SwordIcon size={16} weight="duotone" className="text-primary" />
+              <h4 className="text-sm font-semibold text-foreground">Attributes</h4>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {Object.entries(p.attributes || {}).map(([key, value]) => (
+                <motion.div
+                  key={key}
+                  whileHover={{ scale: 1.05 }}
+                  className="text-center p-2 rounded bg-background/40 border border-border/30"
+                >
+                  <div className="text-xs text-muted-foreground truncate">{key}</div>
+                  <div className="text-lg font-bold font-mono text-foreground">{value}</div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Inventory */}
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <BackpackIcon size={16} weight="duotone" className="text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">Inventory</h4>
+            <span className="text-xs text-muted-foreground">
+              ({p.inventory?.length || 0})
+            </span>
+          </div>
+          {(!p.inventory || p.inventory.length === 0) ? (
+            <div className="text-center py-4 text-sm italic text-muted-foreground">
+              Empty
+            </div>
+          ) : (
+            <div className="space-y-1 max-h-48 overflow-y-auto pr-2">
+              {p.inventory!.map((item, i) => (
+                <motion.button
+                  key={i}
+                  onClick={() => setSelectedItem(item)}
+                  whileHover={{ scale: 1.02, x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={cn(
+                    "w-full flex items-center justify-between p-2 rounded text-left",
+                    "bg-background/40 hover:bg-background/60 border border-border/30",
+                    "transition-colors cursor-pointer group"
+                  )}
+                >
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                      {item.name}
+                    </span>
+                    {item.durability !== undefined && item.durability < 100 && (
+                      <div className="mt-1 h-1 rounded-full bg-background/50 overflow-hidden">
+                        <div 
+                          className={cn(
+                            "h-full transition-all",
+                            item.durability > 50 ? "bg-green-500" : 
+                            item.durability > 25 ? "bg-yellow-500" : "bg-red-500"
+                          )}
+                          style={{ width: `${item.durability}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-xs font-mono text-muted-foreground ml-2">
+                    ×{item.qty || 1}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Item Modal */}
+      <AnimatePresence>
+        {selectedItem && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() => setSelectedItem(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-card border-2 border-border/50 rounded-lg p-6 max-w-md w-full parchment shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h4 className="text-xl font-bold text-foreground font-serif magic-glow">
+                    {selectedItem.name}
+                  </h4>
+                  {selectedItem.type && (
+                    <span className="inline-block mt-1 text-xs px-2 py-1 rounded bg-primary/20 text-primary border border-primary/30">
+                      {selectedItem.type}
+                    </span>
+                  )}
+                </div>
+                <button
+                  onClick={() => setSelectedItem(null)}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              {selectedItem.desc && (
+                <p className="text-sm text-muted-foreground mb-4 italic leading-relaxed">
+                  {selectedItem.desc}
+                </p>
+              )}
+
+              <div className="space-y-2 text-sm">
+                {selectedItem.qty !== undefined && (
+                  <div className="flex justify-between py-1 border-b border-border/30">
+                    <span className="text-muted-foreground">Quantity</span>
+                    <span className="font-mono font-semibold text-foreground">{selectedItem.qty}</span>
+                  </div>
+                )}
+                {selectedItem.durability !== undefined && (
+                  <div className="flex justify-between py-1 border-b border-border/30">
+                    <span className="text-muted-foreground">Durability</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-20 h-2 rounded-full bg-background/50 overflow-hidden">
+                        <div 
+                          className={cn(
+                            "h-full transition-all",
+                            selectedItem.durability > 50 ? "bg-green-500" : 
+                            selectedItem.durability > 25 ? "bg-yellow-500" : "bg-red-500"
+                          )}
+                          style={{ width: `${selectedItem.durability}%` }}
+                        />
+                      </div>
+                      <span className="font-mono font-semibold text-foreground">
+                        {selectedItem.durability}%
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {selectedItem.weight !== undefined && (
+                  <div className="flex justify-between py-1 border-b border-border/30">
+                    <span className="text-muted-foreground">Weight</span>
+                    <span className="font-mono font-semibold text-foreground">{selectedItem.weight} lbs</span>
+                  </div>
+                )}
+                {selectedItem.value !== undefined && (
+                  <div className="flex justify-between py-1 border-b border-border/30">
+                    <span className="text-muted-foreground">Value</span>
+                    <span className="font-mono font-semibold text-gold">{selectedItem.value} GP</span>
+                  </div>
+                )}
+                {selectedItem.damage && (
+                  <div className="flex justify-between py-1 border-b border-border/30">
+                    <span className="text-muted-foreground">Damage</span>
+                    <span className="font-mono font-semibold text-red-500">{selectedItem.damage}</span>
+                  </div>
+                )}
+                {selectedItem.armor_class !== undefined && (
+                  <div className="flex justify-between py-1 border-b border-border/30">
+                    <span className="text-muted-foreground">Armor Class</span>
+                    <span className="font-mono font-semibold text-foreground">+{selectedItem.armor_class}</span>
+                  </div>
+                )}
+                {selectedItem.properties && selectedItem.properties.length > 0 && (
+                  <div className="py-1">
+                    <span className="text-muted-foreground">Properties</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {selectedItem.properties.map((prop, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs px-2 py-1 rounded-full bg-secondary/20 text-secondary-foreground border border-secondary/30"
+                        >
+                          {prop}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 

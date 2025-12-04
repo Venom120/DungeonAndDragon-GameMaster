@@ -25,7 +25,7 @@ const ANIMATION_TRANSITION = {
   stiffness: 675,
   damping: 75,
   mass: 1,
-};
+} as const;
 
 const classNames = {
   // GRID
@@ -98,7 +98,7 @@ export function TileLayout({ chatOpen }: TileLayoutProps) {
   const videoWidth = agentVideoTrack?.publication.dimensions?.width ?? 0;
   const videoHeight = agentVideoTrack?.publication.dimensions?.height ?? 0;
 
-  const [worldState, setWorldState] = useState(null);
+  const [worldState, setWorldState] = useState<any>(null);
   const { message: worldStateMessage } = useDataChannel("world_state");
 
   const [leftOpen, setLeftOpen] = useState(false);
@@ -111,7 +111,7 @@ export function TileLayout({ chatOpen }: TileLayoutProps) {
     // parse the message directly since useDataChannel handles subscription internally
     handleIncomingMessage(worldStateMessage);
 
-    function handleIncomingMessage(msg) {
+    function handleIncomingMessage(msg: any) {
       let text = "";
       try {
         const decoder = new TextDecoder();
@@ -338,7 +338,7 @@ export function TileLayout({ chatOpen }: TileLayoutProps) {
                         rightOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
                       )}
                     >
-                      <RightPanel player={worldState?.player} />
+                      <RightPanel player={worldState?.player} locations={worldState?.locations} />
                     </div>
                   </div>
                 )}

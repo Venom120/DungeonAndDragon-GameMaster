@@ -37,7 +37,7 @@ function SelectTrigger({
           'disabled:cursor-not-allowed disabled:opacity-50',
           'focus-visible:border-ring focus-visible:ring-ring/50 hover:bg-foreground/10 focus:bg-foreground/10 outline-none focus-visible:ring-[3px]',
           'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
-          'data-[placeholder]:text-muted-foreground',
+          'data-placeholder:text-muted-foreground',
           'data-[size=default]:h-9 data-[size=sm]:h-8',
           '*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2',
           "[&:not([class*='text-'])_svg:not([class*='text-'])]:text-muted-foreground",
@@ -68,7 +68,7 @@ function SelectContent({
         className={cn(
           [
             'bg-popover text-popover-foreground relative z-50 overflow-x-hidden overflow-y-auto rounded-md border drop-shadow-xl/5',
-            'max-h-(--radix-select-content-available-height) min-w-[8rem]',
+            'max-h-(--radix-select-content-available-height) min-w-32',
             'origin-(--radix-select-content-transform-origin)',
             'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
             'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
@@ -89,7 +89,7 @@ function SelectContent({
           className={cn(
             'p-1',
             position === 'popper' &&
-              'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] scroll-my-1'
+              'h-(--radix-select-trigger-height) w-full min-w-(--radix-select-trigger-width) scroll-my-1'
           )}
         >
           {children}
@@ -123,7 +123,7 @@ function SelectItem({
           'relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none',
           'cursor-pointer disabled:cursor-not-allowed',
           'focus:bg-accent focus:text-accent-foreground',
-          'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+          'data-disabled:pointer-events-none data-disabled:opacity-50',
           '*:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2',
           "[&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         ],

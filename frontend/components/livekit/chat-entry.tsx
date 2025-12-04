@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ScrollIcon, SwordIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 export interface ChatEntryProps extends React.HTMLAttributes<HTMLLIElement> {
@@ -30,13 +31,13 @@ export const ChatEntry = ({
   const title = time.toLocaleTimeString(locale, { timeStyle: 'full' });
   
   const isGameMaster = messageOrigin === 'remote';
-  const displayName = isGameMaster ? '🎲 Game Master' : '⚔️ You';
+  const displayName = isGameMaster ? 'Game Master' : name || 'You';
 
   return (
     <li
       title={title}
       data-lk-message-origin={messageOrigin}
-      className={cn('group flex w-full flex-col gap-0.5', className)}
+      className={cn('group flex w-full flex-col gap-1.5', className)}
       {...props}
     >
       <header
@@ -45,8 +46,16 @@ export const ChatEntry = ({
           messageOrigin === 'local' ? 'flex-row-reverse' : 'text-left'
         )}
       >
-        <strong className={isGameMaster ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400'}>
-          {name || displayName}
+        <strong className={cn(
+          'flex items-center gap-1.5 font-serif',
+          isGameMaster ? 'text-primary magic-glow-text' : 'text-blue-600 dark:text-blue-400'
+        )}>
+          {isGameMaster ? (
+            <ScrollIcon size={16} weight="duotone" />
+          ) : (
+            <SwordIcon size={16} weight="duotone" />
+          )}
+          {displayName}
         </strong>
         <span className="font-mono text-xs opacity-0 transition-opacity ease-linear group-hover:opacity-100">
           {hasBeenEdited && '*'}
@@ -55,10 +64,10 @@ export const ChatEntry = ({
       </header>
       <span
         className={cn(
-          'max-w-[80%] rounded-[20px] px-4 py-2 shadow-sm',
+          'max-w-[80%] rounded-2xl px-4 py-3 shadow-md leading-relaxed',
           messageOrigin === 'local' 
             ? 'bg-blue-600 text-white ml-auto' 
-            : 'bg-purple-100 dark:bg-purple-900/40 text-foreground border border-purple-200 dark:border-purple-700 mr-auto'
+            : 'parchment text-foreground border-2 border-primary/30 mr-auto font-serif italic backdrop-blur-sm'
         )}
       >
         {/** Preserve explicit newlines encoded as \n by rendering them as <br/> */}
